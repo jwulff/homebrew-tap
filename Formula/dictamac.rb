@@ -17,7 +17,7 @@ class Dictamac < Formula
   # Replace with the value of:
   #   curl -sL https://github.com/jwulff/dictamac/archive/refs/tags/v0.1.0.tar.gz \
   #     | shasum -a 256
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "ffb72eedd13db1eb27e16837b44b363360638f61f4240def3fb9d04bab633658"
   license "MIT"
   head "https://github.com/jwulff/dictamac.git", branch: "main"
 
