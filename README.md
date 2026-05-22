@@ -20,6 +20,7 @@ brew install jwulff/tap/<formula>
 | Formula | Description | Upstream |
 |---|---|---|
 | [dictamac](Formula/dictamac.rb) | macOS CLI for on-device audio transcription via SpeechAnalyzer | [jwulff/dictamac](https://github.com/jwulff/dictamac) |
+| [steno](Formula/steno.rb) | macOS always-on speech-to-text TUI + MCP server (Swift daemon + Go CLI) | [jwulff/steno](https://github.com/jwulff/steno) |
 
 ## Requirements
 
