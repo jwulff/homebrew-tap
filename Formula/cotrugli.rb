@@ -1,9 +1,9 @@
 # Homebrew formula for the cotrugli host collectors.
 #
 # Installs the Rust host-collector binaries from the cotrugli monorepo
-# (github.com/jwulff/cotrugli): cotrugli-photos, cotrugli-imessage, and
-# cotrugli-contacts. One formula ships every collector binary so a new Mac gets
-# the whole collector suite from a single `brew install`.
+# (github.com/jwulff/cotrugli): cotrugli-photos, cotrugli-imessage,
+# cotrugli-contacts, and cotrugli-fs. One formula ships every collector binary
+# so a new Mac gets the whole collector suite from a single `brew install`.
 #
 #   brew install --HEAD jwulff/homebrew-tap/cotrugli
 #
@@ -17,7 +17,7 @@
 # builds latest `main`) and the mandatory `--HEAD` flag. A signed/notarized
 # stable release channel is deferred to the code-signing follow-up (issue #284).
 class Cotrugli < Formula
-  desc "macOS host collectors (Photos, iMessage, Contacts) for the cotrugli lake"
+  desc "macOS host collectors (Photos, iMessage, Contacts, Filesystem) for the cotrugli lake"
   homepage "https://github.com/jwulff/cotrugli"
   license "MIT"
   head "https://github.com/jwulff/cotrugli.git", branch: "main"
@@ -43,6 +43,7 @@ class Cotrugli < Formula
     system "cargo", "install", *std_cargo_args(path: "packages/photos-collector")
     system "cargo", "install", *std_cargo_args(path: "packages/imessage-collector")
     system "cargo", "install", *std_cargo_args(path: "packages/contacts-collector")
+    system "cargo", "install", *std_cargo_args(path: "packages/fs-collector")
   end
 
   def caveats
@@ -57,21 +58,30 @@ class Cotrugli < Formula
              cotrugli-photos   enroll --server https://cotrugli.com --code cotrc_...
              cotrugli-imessage enroll --server https://cotrugli.com --code cotrc_...
              cotrugli-contacts enroll --server https://cotrugli.com --code cotrc_...
+             cotrugli-fs       enroll --server https://cotrugli.com --code cotrc_...
 
         2. Grant Full Disk Access to
              #{bin}/cotrugli-photos
              #{bin}/cotrugli-imessage
+             #{bin}/cotrugli-fs
            in System Settings -> Privacy & Security -> Full Disk Access, so they
-           can read the Photos library and ~/Library/Messages/chat.db.
+           can read the Photos library, ~/Library/Messages/chat.db, and the
+           filesystem scan roots (Downloads/Desktop/Documents/screenshots).
 
         3. Schedule the LaunchAgent(s):
 
              cotrugli-photos   install-launchd --server https://cotrugli.com
              cotrugli-imessage install-launchd --server https://cotrugli.com
              cotrugli-contacts install-launchd --server https://cotrugli.com
+             cotrugli-fs       install-launchd --server https://cotrugli.com
 
-           Tip: dry-run the Photos collector first with
+           Tip: dry-run first (local, no uploads) to see what would be captured:
              cotrugli-photos sweep --dry-run --server https://cotrugli.com
+             cotrugli-fs     sweep --dry-run --server https://cotrugli.com
+
+           The filesystem collector captures forward-only by default; run
+             cotrugli-fs backfill --server https://cotrugli.com
+           to opt into capturing the pre-existing tree.
 
       Check state any time with `cotrugli-imessage status --server https://cotrugli.com`.
 
@@ -89,5 +99,6 @@ class Cotrugli < Formula
     assert_match "cotrugli", shell_output("#{bin}/cotrugli-photos --help")
     assert_match "cotrugli", shell_output("#{bin}/cotrugli-imessage --help")
     assert_match "cotrugli", shell_output("#{bin}/cotrugli-contacts --help")
+    assert_match "cotrugli", shell_output("#{bin}/cotrugli-fs --help")
   end
 end
